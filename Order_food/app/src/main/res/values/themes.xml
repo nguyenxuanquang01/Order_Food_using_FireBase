@@ -6,4 +6,13 @@
     </style>
 
     <style name="Theme.Order_Food" parent="Base.Theme.Order_Food" />
+
+    <style name="Theme.Order_Food.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="Theme.Order_Food.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+    <style name="Theme.Order_Food.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 </resources>
