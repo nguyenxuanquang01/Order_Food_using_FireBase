@@ -11,56 +11,54 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.example.order_food.Model.User;
-import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
-public class SignIn extends AppCompatActivity {
-    EditText edtPhone, edtPassword;
-    Button btnSignIn;
+public class SignUp extends AppCompatActivity {
+
+    EditText edtPhone, edtName, edtPassword;
+    Button btnSignUp;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_sign_in);
+        setContentView(R.layout.activity_sign_up);
 
-        edtPassword = (EditText) findViewById(R.id.edtPassword);
         edtPhone = (EditText) findViewById(R.id.edtPhone);
-        btnSignIn = (Button) findViewById(R.id.btnSignIn);
+        edtName = (EditText) findViewById(R.id.edtName);
+        edtPassword = (EditText) findViewById(R.id.edtPassword);
+        btnSignUp = (Button) findViewById(R.id.btnSignUp);
 
         //Init FireBase
         FirebaseDatabase firebaseDatabase = FirebaseDatabase.getInstance();
         DatabaseReference table_user = firebaseDatabase.getReference("User");
 
-        btnSignIn.setOnClickListener(new View.OnClickListener() {
+        btnSignUp.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
-                ProgressDialog mDialog = new ProgressDialog(SignIn.this);
+                ProgressDialog mDialog = new ProgressDialog(SignUp.this);
                 mDialog.setMessage("Please waiting ...");
                 mDialog.show();
 
                 table_user.addValueEventListener(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-
-                        //Check if user exist
-                        if (snapshot.child(edtPhone.getText().toString()).exists()){
-                            //Get User Information
+                        // check if already exist phone number
+                        if(snapshot.child(edtPhone.getText().toString()).exists()){
                             mDialog.dismiss();
-                            User user = snapshot.child(edtPhone.getText().toString()).getValue(User.class);
-                            if(user.getPassword().equals(edtPassword.getText().toString())){
-                                Toast.makeText(SignIn.this,"Sign In Successfully",Toast.LENGTH_SHORT).show();
-                            }else {
-                                Toast.makeText(SignIn.this,"Sign In Failed",Toast.LENGTH_SHORT).show();
-                            }
+                            Toast.makeText(SignUp.this,"Already register !!!",Toast.LENGTH_SHORT).show();
                         }else{
                             mDialog.dismiss();
-                            Toast.makeText(SignIn.this,"User not Exist !!!",Toast.LENGTH_SHORT).show();
+                            User user = new User(edtName.getText().toString(),edtPassword.getText().toString());
+                            table_user.child(edtPhone.getText().toString()).setValue(user);
+                            Toast.makeText(SignUp.this,"Sign up successfully  !!!",Toast.LENGTH_SHORT).show();
+                            finish();
                         }
+
                     }
 
                     @Override
@@ -70,6 +68,5 @@ public class SignIn extends AppCompatActivity {
                 });
             }
         });
-
     }
 }
